@@ -1,0 +1,114 @@
+{% extends "admin/base.html" %}
+{% from "macro/_page.html" import pagination_widget %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/admin.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/iCheck/square/blue.css') }}"/>
+{% endblock %}
+
+
+{% block content %}
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="alert alert-danger alert-dismissible" style="display: none;">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-ban"></i> 错误</h4>
+        <p id="alert-msg"></p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title"><i class="fa fa-graduation-cap"></i> 教师管理</h3>
+        </div>
+        <div class="box-body no-padding">
+          <div class="list-box-controls">
+            <a class="btn btn-primary btn-sm" href="{{ url_for('admin.teacher_add') }}"><i class="fa fa-plus"></i>
+              添加</a>
+            <div class="pull-right">
+              {{ pagination_widget(pagination, '.teacher', 'pagination-sm') }}
+            </div>
+          </div>
+          <table class="table table-bordered table-striped table-condensed" style="text-align: center">
+            <thead><tr>
+
+              <th class="col-name">姓名</th><th>学院部门</th>
+              <th width="20%">操作</th>
+            </tr></thead>
+            <tbody>
+            {% if not teacher_list %}
+              <tr><td colspan="4"><h2>当前无教师信息</h2></td></tr>
+            {% else %}
+            {% for teacher in teacher_list %}
+              <tr id="teacher{{ teacher.id }}">
+              <td class="col-name">{{ teacher.name }}</td>
+              <td>{{ teacher.department or '' }}</td>
+              <td>
+                <div class="btn-group btn-group-sm">
+                  <a class="btn btn-default btn-sm" href="{{ url_for('admin.teacher_edit', id=teacher.id) }}">
+                    <i class="fa fa-pencil-square-o"></i> 修改
+                  </a>
+                  <a class="btn btn-default btn-sm to_delete_item" data-item="{{ teacher.id }}"
+                     data-toggle="modal" data-target="#delModal"><i class="fa fa-trash-o"></i> 删除
+                  </a>
+                </div>
+              </td>
+              </tr>
+            {% endfor %}
+            {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<div class="modal fade" id="delModal" tabindex="-1"
+     role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title text-center" id="myModalLabel">警告</h4>
+      </div>
+      <div class="modal-body">
+        <h4>确定删除选定教师</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-danger del-item">确认</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+  <script>
+    $(document).ready(function() {
+      $('.to_delete_item').on('click', function() {
+        var id = $(this).data('item');
+        $('.del-item').data('teacher', id);
+      });
+      $('.del-item').on('click', function() {
+        var url = "{{ url_for('admin.teacher_del') }}";
+        var id = $(this).data('teacher');
+        var data = { 'teacher_id' : id };
+        $('#delModal').modal('hide');
+        $.post(url, data, function(response) {
+          if (response.ret == 'OK') {
+            $('#teacher' + id).fadeOut(1200, function(){ $(this).remove(); });
+          } else {
+            $('#alert-msg').html(response.ret);
+            $('.alert-danger').fadeIn();
+          }
+        });
+      });
+
+    });
+  </script>
+{% endblock %}

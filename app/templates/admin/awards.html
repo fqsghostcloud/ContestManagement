@@ -1,0 +1,282 @@
+{% extends "admin/base.html" %}
+{% from "macro/_page.html" import pagination_widget %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/iCheck/square/blue.css') }}"/>
+  <style type="text/css">
+
+  </style>
+{% endblock %}
+
+{% block content_header %}
+  <div class="row">
+    <div class="col-sm-12">
+      <ol class="breadcrumb">
+        <li><a href="{{ url_for('admin.pre_award') }}">竞赛管理</a></li>
+        <li class="active">{{ contest.name_cn }}</li>
+      </ol>
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box box-widget widget-user-2">
+        <div class="widget-user-header bg-white" style="padding: 10px 20px;">
+          <h3 class="big-title">{{ contest.name_cn }}</h3>
+          {% if contest.name_en %}
+          <h5 class="big-title">{{ contest.name_en }}</h5>
+          {% endif %}
+          <div class="col-md-12 front-panel">
+            <div class="front col-sm-12 col-md-6">
+              <span class="title"><i class="fa fa-calendar"></i> 竞赛日期:</span>
+              <span class="body">
+                {{ contest.start_date.strftime('%Y/%m/%d') }} -
+                {{ contest.end_date.strftime('%Y/%m/%d') }}</span>
+            </div>
+            <div class="front col-sm-12 col-md-6">
+              <span class="title"><i class="fa fa-trophy"></i> 竞赛等级:</span>
+              <span class="body">{{ contest.level_name }}</span>
+            </div>
+            <div class="front col-sm-12 col-md-6">
+              <span class="title"><i class="fa fa-tag"></i> 竞赛类型: </span>
+              <span class="body">{{ contest.type }}</span>
+            </div>
+            <div class="front col-sm-12 col-md-6">
+              <span class="title"><i class="fa fa-bank"></i> 主办方: </span>
+              <span class="body">{{ contest.organizer }}</span>
+            </div>
+            {% if contest.co_organizer %}
+            <div class="front col-sm-12 col-md-6">
+              <span class="title"><i class="fa fa-bank"></i> 承办方: </span>
+              <span class="body">{{ contest.co_organizer }}</span>
+            </div>
+            {% endif %}
+            <div class="front col-sm-12 col-md-6">
+              <span class="title"><i class="fa fa-map-o"></i> 地点:</span>
+              <span class="body">{{ contest.place }}</span>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="box-body no-padding">
+          <div class="list-box-controls">
+            <div class="pull-right">
+              {{ pagination_widget(pagination, '.awards', 'pagination-sm', id=contest.id) }}
+            </div>
+          </div>
+         {% if awards_list %}
+{#            <th>审核状态</th>#}
+{#            <td>#}
+{#                  {% if awards_list[0].process == process[1] %}#}
+{#                    <label class="label bg-green">{{ awards_list[0].process }}{{ 1 }}</label>#}
+{#                  {% else %}#}
+{#                    <label class="label bg-red">{{ awards_list[0].process }}{{ 11 }}</label>#}
+{##}
+{#                  {% endif %}#}
+{#            </td>#}
+
+{#            {% if not department %}#}
+{#                {% if awards_list[0].apply == 0 %}#}
+{#                     <a href="{{ url_for('admin.awards_pass_check',id = contest.id) }}"#}
+{#                        class="btn bg-green btn-flat btn-sm">#}
+{#                     <i class="fa fa-flag"></i> 审核#}
+{#                     </a>#}
+{#                    <a href="{{ url_for('admin.awards_refuse_check', id = contest.id) }}"#}
+{#                            class="btn bg-red btn-flat btn-sm"><i class="fa fa-times"></i> 拒绝#}
+{#                    </a>#}
+{#                {% endif %}#}
+{#                {% if awards_list[0].apply == 2 %}#}
+{#                    <a href="{{ url_for('admin.awards_required_through',id = contest.id) }}"#}
+{#                       class="btn bg-green btn-flat btn-sm">#}
+{#                     <i class="fa fa-flag"></i> 通过申请#}
+{#                    </a>#}
+{#                {% endif %}#}
+{##}
+{#            {% endif %}#}
+{#            {% if department %}#}
+{#                {% if awards_list[0].apply == 1 %}#}
+{#                <a class="btn btn-default btn-flat btn-sm" href="{{ url_for('admin.awards_require_edit', id=contest.id) }}">#}
+{#                    <i class="fa fa-pencil-square-o"></i> 申请编辑#}
+{#                </a>#}
+{#                {% endif %}#}
+{#                {% if awards_list[0].apply == 2 %}#}
+{#                    <label class="label label-danger">{{ '申请待审核' }}</label>#}
+{#                {% endif %}#}
+{#            {% endif %}#}
+        {% endif %}
+          <table class="table table-bordered awards-table table-condensed">
+            <thead><tr>
+              <th>奖项编号</th>
+              <th>获奖等级</th>
+              <th>获奖学生</th>
+              <th>指导教师</th>
+              <th>奖项类型</th>
+              <th>作品名称</th>
+{#              <th>审核状态</th>#}
+              <th width="25%">操作</th>
+            </tr></thead>
+            <tbody>
+            {% if not awards_list %}
+              <tr><td colspan="8"><h2>暂无获奖信息</h2></td></tr>
+            {% else %}
+                {% set n = 1 %}
+            {% for awards in awards_list %}
+              <tr id="awards{{ awards.id }}">
+                <td>{{ n }}</td>
+              {% set n = n + 1 %}
+                <td>{{ awards.level }}</td>
+                <td>{% set num = 1 %}
+                    {% for student in awards.students %}
+                    {% if num < 4 %}
+                        {{ student.name or student.stu_no }}&nbsp;
+                    {% endif %}
+                    {% if num == 4 %}
+                        ...
+                    {% endif %}
+                    {% set num=num + 1 %}
+                {% endfor %}</td>
+                <td>{% for teacher in awards.teachers %}
+                  {{ teacher.name }}&nbsp;
+                {% endfor %}</td>
+                <td>{{ awards.type }}</td>
+              <td>{{ awards.title }}</td>
+                <td>
+{#                  {% if awards.process == process[1] %}#}
+{#                    <label class="label bg-green">{{ awards.process }}</label>#}
+{#                  {% else %}#}
+{#                    <label class="label bg-red">{{ awards.process }}</label>#}
+{##}
+{#                  {% endif %}#}
+{#                </td>#}
+{#                <td>#}
+                  <div class="btn-group btn-group-sm">
+
+                    {% if department %}
+                        {% if awards.apply == 0 %}
+                            <label class="label label-danger">{{ awards.process }}</label>
+                        {% endif %}
+                        {% if awards.apply == 1 %}
+                         <label class="label label-danger">{{ awards.process }}</label>
+                        {% endif %}
+                         {% if awards.apply == 1 or awards.apply == 5%}
+                        <a class="btn btn-default btn-flat btn-sm" href="{{ url_for('admin.awards_require_edit', cid = contest.id,id=awards.id) }}">
+                        <i class="fa fa-pencil-square-o"></i> 申请编辑
+                        </a>
+                        {% endif %}
+                        {% if awards.apply == 3 %}
+                         <label class="label label-danger">{{ awards.process }}</label>
+                        {% endif %}
+                        {% if awards.apply == 4 %}
+                            <label class="label label-danger">{{ awards.process }}</label>
+                        {% endif %}
+                        {% if awards.apply == 5 %}
+                            <label class="label label-danger">{{ awards.process }}</label>
+                        {% endif %}
+                        {% if awards.apply == 6 %}
+                            <label class="label label-danger">{{ awards.process }}</label>
+                        {% endif %}
+{#                        {% if awards.process == process[1] %}#}
+{#                         <label class="label bg-green">{{ awards.process }}{{ 1 }}</label>#}
+{#                        {% else %}#}
+{#                        <label class="label bg-red">{{ awards.process }}{{ 2 }}</label>#}
+{##}
+{#                        {% endif %}#}
+                        {% if awards.apply == 0 or awards.apply == 2 or awards.apply == 4 or awards.apply == 6%}
+                         <a class="btn btn-default btn-sm" href="{{ url_for('admin.awards_edit',  id=contest.id,
+                         awards_id=awards.id) }}"><i class="fa fa-pencil-square-o"></i> 编辑</a>
+                         <a class="btn btn-default btn-sm to_delete_item" data-item="{{ awards.id }}"
+                          data-toggle="modal"  data-target="#delModal">
+                         <i class="fa fa-trash-o"></i> 删除</a>
+                         {% endif %}
+
+                    {% endif %}
+                    {% if awards.apply == 1 and not departement %}
+                        <a class="btn btn-default btn-sm" href="{{ url_for('admin.awards_check_after_pass',  id=contest.id,
+                        awards_id=awards.id) }}"><i class="fa fa-pencil"></i> 查看</a>  {#aaaa#}
+                    {% else %}
+                     <a class="btn btn-default btn-sm" href="{{ url_for('admin.awards_check_after_pass',  id=contest.id,
+                        awards_id=awards.id) }}"><i class="fa fa-pencil"></i> 查看</a>
+{#                        ###admin.awards_check}#}
+                  {% endif %}
+                  {% if not department %}
+                    {% if awards.apply == 0 or awards.apply == 6%}
+                     <a href="{{ url_for('admin.awards_check_pass',id = contest.id,awards_id = awards.id) }}"
+                        class="btn bg-green btn-flat btn-sm">
+                     <i class="fa fa-flag"></i> 审核
+                     </a>
+                    <a href="{{ url_for('admin.awards_check_refuse', id = contest.id,awards_id = awards.id) }}"
+                            class="btn bg-red btn-flat btn-sm"><i class="fa fa-times"></i> 拒绝
+                    </a>
+                {% endif %}
+                {% if awards.apply == 3 %}
+                    <a href="{{ url_for('admin.awards_required_through',cid = contest.id,id = awards.id) }}"
+                       class="btn bg-green btn-flat btn-sm">
+                     <i class="fa fa-flag"></i> 通过申请
+                    </a>
+                    <a href="{{ url_for('admin.awards_required_refuse',cid = contest.id,id = awards.id) }}"
+                       class="btn bg-green btn-flat btn-sm">
+                     <i class="fa fa-flag"></i> 拒绝申请
+                    </a>
+                {% endif %}
+
+            {% endif %}
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+            {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Modal -->
+  <div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">警告</h4>
+        </div>
+        <div class="modal-body">
+          <h4>是否确定删除此奖项</h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-danger del-items">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block script %}
+  <script>
+    $(document).ready(function () {
+
+      $('.to_delete_item').on('click', function() {
+        var id = $(this).data('item');
+        $('.del-items').data('awards', id);
+      });
+      $('.del-items').on('click', function() {
+        var url = "{{ url_for('admin.awards_del') }}";
+        var id = $(this).data('awards');
+        var data = { 'awards_id' : id };
+        $('#delModal').modal('hide');
+        $.post(url, data, function(response) {
+          if (response.ret == 'OK') {
+            $('#awards' + id).fadeOut(1200, function(){ $(this).remove(); });
+          }
+        });
+      });
+
+    });
+  </script>
+{% endblock %}

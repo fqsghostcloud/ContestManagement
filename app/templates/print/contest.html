@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>打印报表</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/print.css') }}" />
+</head>
+<body>
+<div class="block" style="width: 21cm;">
+  <div class="title">
+    <h2>学科竞赛申报表</h2>
+    <p>（&nbsp;&nbsp;&nbsp;&nbsp; -- &nbsp;&nbsp;&nbsp;&nbsp;学年）</p>
+  </div>
+  <table class="table">
+    <tbody>
+    <tr><td class="front">竞赛编号</td><td colspan="3">{{ contest.contest_id }}</td></tr>
+    <tr><td class="front">竞赛中文名</td><td colspan="3">{{ contest.name_cn }}</td></tr>
+    <tr><td class="front">竞赛英文名</td><td colspan="3">{{ contest.name_en }}</td></tr>
+    <tr><td class="front">竞赛等级</td><td class="body">{{ contest.level_name }}</td>
+      <td class="front">竞赛类型</td><td class="body">{{ contest.type }}</td></tr>
+    <tr><td class="front">所属学院</td><td colspan="3">{{ contest.department }}</td></tr>
+    <tr><td class="front">主办方</td><td colspan="3">{{ contest.organizer }}</td></tr>
+    <tr><td class="front">承办方</td><td colspan="3">{{ contest.co_organizer }}</td></tr>
+    <tr><td class="front">竞赛时间</td><td colspan="3">{{ contest.start_date }} 至 {{ contest.end_date }}</td></tr>
+    <tr><td class="front">竞赛地点</td><td colspan="3">{{ contest.place }}</td></tr>
+    <tr class="apply"><td class="front">学院意见</td><td colspan="3"></td></tr>
+    <tr class="apply"><td class="front">教务处意见</td><td colspan="3"></td></tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+  {% if title -%}
+    <title>{{ title }} - CUIT 奖项管理</title>
+  {%- else -%}
+    <title>CUIT 奖项管理</title>
+  {%- endif %}
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/Font-Awesome-4.4.0/css/font-awesome.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='AdminLTE2/css/AdminLTE.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='AdminLTE2/css/skins/_all-skins.min.css') }}">
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/admin.css') }}">
+  {%- block head -%}{%- endblock -%}
+</head>
+
+<body class="skin-blue sidebar-mini fixed">
+<div class="wrapper">
+  <header class="main-header">
+    <!-- Logo -->
+    <a href="{{ url_for('main.index') }}" class="logo" >
+      <span class="logo-mini"><b><i class="fa fa-university"></i></b></span>
+      <span class="logo-lg">CUIT 奖项管理</span>
+    </a>
+    <nav class="navbar navbar-static-top" role="navigation">
+      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          {%- if current_user.is_authenticated -%}
+            <li><a href="" onclick="return false"><span>{{ current_user.username }}</span></a></li>
+            <li><a href="{{ url_for('admin.logout') }}"><span>注销</span></a></li>
+          {% else %}
+            <li><a href="{{ url_for('admin.login') }}"><span>登录</span></a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <div class="main-sidebar">
+    <section class="sidebar" style="height: auto;">
+      <ul class="sidebar-menu">
+        {% if current_user.level == 1 %}
+          <li class="header">计划管理</li>
+          <li><a href="{{ url_for('admin.contest_add') }}"><i class="fa fa-plus"></i> <span>添加竞赛计划</span></a></li>
+          <li><a href="{{ url_for('admin.contest') }}"><i class="fa fa-flag"></i> <span>竞赛编辑</span></a></li>
+          <li><a href="{{ url_for('admin.contest_plan_config_print') }}"><i class="fa fa-print"></i> <span>打印竞赛计划表</span></a></li>
+          <li class="header">奖项管理</li>
+          <li><a href="{{ url_for('admin.pre_award') }}"><i class="fa fa-pencil"></i> <span>奖项管理</span></a></li>
+          <li class="header">人员管理</li>
+          <li><a href="{{ url_for('admin.teacher') }}"><i class="fa fa-graduation-cap"></i> <span>指导教师</span></a></li>
+          <li><a href="{{ url_for('admin.student') }}"><i class="fa fa-bicycle"></i> <span>学生</span></a></li>
+          <li class="header">统计</li>
+        {% else %}
+          <li class="header">计划管理</li>
+          <li><a href="{{ url_for('admin.contest',filter_pass=1) }}"><i class="fa fa-flag"></i> <span>竞赛审核</span></a></li>
+          <li class="header">奖项管理</li>
+          <li><a href="{{ url_for('admin.pre_award') }}"><i class="fa fa-pencil"></i> <span>奖项管理</span></a></li>
+          <li class="header">系统设置</li>
+          <li><a href="{{ url_for('admin.series') }}"><i class="fa fa-leaf"></i> <span>竞赛系列管理</span></a></li>
+          <li><a href="{{ url_for('admin.user') }}"><i class="fa fa-users"></i> <span>账号管理</span></a></li>
+          <li class="header">人员管理</li>
+          <li><a href="{{ url_for('admin.student') }}"><i class="fa fa-bicycle"></i> <span>学生管理</span></a></li>
+          <li><a href="{{ url_for('admin.teacher') }}"><i class="fa fa-graduation-cap"></i> <span>教师管理</span></a></li>
+          <li class="header">统计</li>
+		  <li><a href="{{ url_for('admin.statistics') }}"><i class="fa fa-pencil"></i>_<span>统计</span></a></li>
+  		  {% endif %}
+      </ul>
+    </section>
+  </div>
+
+  <div class="content-wrapper">
+    <div class="content-header">
+      {% block content_header -%}{%- endblock %}
+    </div>
+    <div class="content">
+      {% block content -%}{%- endblock %}
+    </div>
+  </div>
+  <footer class="main-footer">
+    The MIT License (MIT)
+    <p class="pull-right hidden-xs">成都信息工程大学</p>
+  </footer>
+</div>
+
+<!-- Javascript -->
+<script src="{{ url_for('static', filename='plugins/jQuery/jQuery-1.11.3.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='AdminLTE2/js/app.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/fastclick/fastclick.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/slimScroll/jquery.slimscroll.min.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/admin.js') }}"></script>
+<script>
+  $(document).ready(function() {
+    gaoActiveLink('.sidebar-menu > li > a');
+  });
+</script>
+{%- block script -%}{%- endblock -%}
+</body>
+</html>
+
+

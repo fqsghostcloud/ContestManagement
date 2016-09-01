@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>竞赛计划表</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/print.css') }}"/>
+  <style>
+    .block {
+      width: 960px;
+      min-width: 960px;
+    }
+    table {
+      table-layout: fixed;
+    }
+    h3 {
+      margin-top: 2px;
+      margin-bottom: 2px;
+    }
+    th {
+      text-align: center;
+      font-size: 12px;
+      height: 15px;
+      padding: 2px !important;
+    }
+
+    td {
+      text-align: center;
+      vertical-align: text-top;
+      font-size: 12px;
+      min-height: 60px !important;
+      height: 60px !important;
+      padding: 1px 3px !important;
+      padding-bottom: 0!important;
+
+    }
+
+  </style>
+</head>
+<body>
+<div class="block">
+  <div class="title">
+    <h3>
+      <span class="underline">{{ department }}</span> 学院
+      <span class="underline">{{ year }}</span>
+      年度参加校外学科竞赛计划表
+    </h3>
+  </div>
+  <div class="info"><span>制表人：</span><span>单位盖章：</span></div>
+  <table class="table">
+    <thead>
+    <tr>
+      <th width="45px">序号</th>
+      <th width="175px">竞赛全称</th>
+      <th width="130px">主办单位<br>（承办单位）</th>
+      <th width="70px">竞赛级别</th>
+{#      <th width="70px">面向专业</th>#}
+      <th width="140px">时间、地点</th>
+      <th width="130px">计划参赛情况</th>
+      <th width="130px">经费预算<br>（含简要说明）</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% if not contest_list %}
+      <tr>
+        <td colspan="8"><h2>暂空</h2></td>
+      </tr>
+    {% else %}
+      {% for contest in contest_list %}
+       {% if contest.year == year %}
+        <tr id="contest{{ contest.id }}">
+          <td class="tr-index">{{ loop.index }}</td>
+          <td>{{ contest.name_cn }}</td>
+          <td>{{ contest.organizer }}
+            <br>{{ contest.co_organizer or '' }}</td>
+          <td>{{ contest.result }}</td>
+{#          <td>{{ contest.subject or '' }}</td>#}
+          <td>{{ contest.start_date.strftime('%Y/%m/%d') }}
+             - {{ contest.end_date.strftime('%m/%d') }}
+            <br>{{ contest.place }}
+          </td>
+          <td>学生：{{ contest.student_num or ' ' }} 人
+            <br>教师：{{ contest.teacher_num or ' ' }} 人
+          </td>
+          <td><div>预算：{{ contest.budget or '' }}
+            <br>说明：{{ contest.budget_text or '' }}</div></td>
+        </tr>
+       {% endif %}
+      {% endfor %}
+      {% for i in range(len(contest_list) + 1, 9) %}
+        <tr>
+          <td>{{ i }}</td>
+          <td></td><td></td>
+          <td></td><td></td>
+          <td></td><td></td>
+{#          <td></td>#}
+        </tr>
+      {% endfor %}
+    {% endif %}
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>

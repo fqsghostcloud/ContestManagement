@@ -1,0 +1,24 @@
+#coding=utf-8
+from flask import redirect, url_for, render_template,current_app,request
+from flask.ext.login import current_user,login_required
+from . import main
+from app.models import Student
+
+@main.route('/')
+def index():
+    return render_template("main/index.html")
+
+
+@main.route('/statistics',methods=['GET'])
+@login_required
+def statistics():
+    page = request.args.get('page',1,type = int)
+    per_page = current_app.config['ADMIN_STATISTICS_PER_PAGE']
+    if page == -1:
+        page = ((Student.get_count() - 1) // per_page) + 1
+    pagination = Student.get_list_pageable(page,per_page)
+    student_list = pagination.items
+    return render_template("main/statistics.html",
+                            title = u'统计',
+                            student_list = student_list,
+                            pagination = pagination)

@@ -1,0 +1,78 @@
+
+.block {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.title {
+  text-align: center;
+}
+
+.info {
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.info span {
+  margin-right: 100px;
+}
+
+.table {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid #9b9b9b;
+  vertical-align: middle;
+  border-spacing: 0;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #222;
+}
+
+.table tbody {
+  display: table-row-group;
+  vertical-align: middle;
+}
+
+.table tr {
+  display: table-row;
+}
+
+.table th,
+.table td {
+  border: 1px solid #9b9b9b;
+  padding: 8px;
+}
+
+.table td.front {
+  width: 15%;
+  text-align: center;
+}
+
+.table td.body {
+  min-width: 35%;
+}
+
+.table tr.apply {
+  height: 4.5cm;
+}
+
+span.underline {
+  text-decoration: underline;
+}
+
+td div {
+  margin: 0;
+  height: 55px;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -moz-text-overflow: ellipsis;
+  word-break: break-all;
+}
+.tr-index {
+  vertical-align: middle;
+}

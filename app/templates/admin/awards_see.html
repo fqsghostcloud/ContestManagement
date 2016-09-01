@@ -1,0 +1,87 @@
+{% extends "admin/base.html" %}
+
+{% block head %}
+  <style>
+    td:first-child {
+      width: 20%;
+      text-align: center;
+    }
+  </style>
+{% endblock %}
+
+{% block content_header %}
+  <div class="row">
+    <div class="col-sm-12">
+      <ol class="breadcrumb">
+        <li><a href="{{ url_for('admin.contest', filter_pass=0) }}">奖项查看</a></li>
+        <li class="active">{{ contest.name_cn }}</li>
+      </ol>
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+<div class="col-sm-12">
+  <div class="box box-primary">
+    <div class="box-header with-border">
+      <h3 class="box-title"><i class="fa fa-flag"></i> 查看</h3>
+    </div>
+    <div class="box-body no-padding">
+      <table class="table table-responsive table-bordered" style="vertical-align: middle;">
+        <tbody>
+        <tr><td>作品名称</td><td>{{ contest.name_en }}</td></tr>
+        <tr><td>奖项名称</td><td>{{ awards.honor }}</td></tr>
+        <tr><td>奖项等级</td><td>{{ awards.level }}</td></tr>
+        <tr><td>奖项类型</td><td>{{ awards.type }}</td></tr>
+        <tr><td>指导教师</td><td>
+            {% set num =0 %}
+            {% for n in awards.teachers %}
+                {{ awards.teachers[num].name or '' }}
+                {% set num = num + 1 %}
+            {% endfor %}
+        </td></tr>
+        <tr><td>获奖学生</td>
+        <td>
+            {% set num = 0 %}
+            {% for n in awards.students %}
+            {{ awards.students[num].stu_no or '' }}-{{ awards.students[num].name or '' }}
+                {% set num = num + 1 %}
+            {% endfor %}
+        </td>
+        </tr>
+
+{#        {% if exist_resources %}#}
+{#            <tr>#}
+{#                <td>已上传图片</td>#}
+{#                <td>#}
+{#            {% for res in exist_resources %}#}
+{#                <img style="width: 30%" src="{{ res.url }}">#}
+{#            {% endfor %}#}
+{#                 </td>#}
+{#            </tr>#}
+{#        {% endif %}#}
+        {% if exist_resources %}
+            <tr>
+              <div class="form-group">
+                <tr><td>已上传图片</td>
+                <td>
+                  {% for res in exist_resources %}
+                    <div class="col-sm-4 col-md-4 exist_res" id="resource{{ res.id }}">
+                        <img style="width: 100%" src="{{ res.url }}">
+                      </div>
+                  {% endfor %}
+              </td>
+              </div>
+            </tr>
+            {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

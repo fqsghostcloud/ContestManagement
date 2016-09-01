@@ -1,0 +1,184 @@
+
+thead th {
+  font-weight: 700;
+  text-align: center;
+}
+
+.col-check {
+  width: 10%;
+  text-align: center;
+}
+
+td.col-name {
+  text-align: center;
+  font-weight: 700;
+  font-size: larger;
+}
+
+.table .label {
+  display: inline-block;
+}
+
+.table td {
+  vertical-align: middle !important;
+}
+
+.list-box-controls {
+  padding: 5px 10px;
+}
+
+.breadcrumb {
+  border-top: 3px solid #3c8dbc;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+  background-color: #fff;
+  margin-bottom: 0;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.box-profile .profile-table {
+  border-top: 1px solid #f4f4f4;
+}
+.box-profile .profile-table td {
+  border-top: 0;
+  border-bottom: 1px solid #f4f4f4;
+  padding-bottom: 5px !important;
+  word-break: break-all;
+  word-wrap: break-word;
+  word-spacing: 15px;
+}
+
+.box-profile .profile-table td:first-child {
+  font-weight: bold;
+  width: 70px;
+}
+
+.box-profile .profile-table td:nth-child(2) {
+  text-align: right;
+}
+
+.contest-box .box-footer {
+  border-top: 0;
+  padding: 5px 3px 10px 3px !important;
+  vertical-align: middle;
+}
+
+.awards-table th,
+.awards-table td {
+  text-align: center;
+  vertical-align: middle !important;
+}
+
+
+.widget-user-header .big-title {
+  margin-top: 5px !important;
+}
+
+.widget-user-header .front-panel {
+  padding-left: 0!important;
+  padding-right: 0!important;
+}
+
+.widget-user-header .front {
+  display: inline;
+  padding-left: 0!important;
+}
+.widget-user-header .front .fa {
+  margin-right: 3px;
+}
+.widget-user-header .front .title {
+  width: 90px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.widget-user-header .front .body {
+  display: inline-block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-break: keep-all;
+  vertical-align: middle;
+}
+
+.box-widget tr {
+  height: 80%;
+}
+
+
+.img-box {
+  margin: 5px 0;
+  border: 2px solid #fff;
+  border-radius: 2px;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #fff;
+  box-shadow: 1px 2px 2px #ccc;
+}
+
+.img-box:hover {
+  border: 2px solid #367fa9;
+  box-shadow: 2px 1px 1px #ddd;
+  cursor: default;
+}
+
+.img-box:hover img {
+  opacity: 0.3;
+  filter: alpha(opacity=30);
+  cursor: default;
+}
+
+.img-box img {
+  width: 100%;
+}
+
+.img-box .fa-plus {
+  font-size: 3.2em;
+  width: 100%;
+}
+
+.img-box .opt-btn {
+  display: none;
+  position: absolute;
+  width: 80%;
+  right: 10%;
+  bottom: 12%;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+}
+
+.img-box:hover .opt-btn {
+  display: block;
+  position: absolute;
+  width: 80%;
+  right: 10%;
+  bottom: 15%;
+  cursor: pointer;
+  margin-left: -20px;
+}
+
+.img-box .opt-btn .label {
+  display: inline-block;
+  font-size: 1.2em;
+  padding: 5px auto;
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+.exist_res {
+  padding-left: 5px !important;
+  padding-right: 5px !important;
+}
+
+.form-group .form-inline {
+}
+
+.form-group .form-inline .form-group {
+  margin-left: 10px;
+  margin-right: 0;
+  margin-bottom: 10px;
+  width: 46%;
+}
+
+.form-group .form-inline .form-group .form-control {
+  width: 100%;
+}

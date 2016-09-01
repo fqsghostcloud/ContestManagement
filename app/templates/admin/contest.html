@@ -1,0 +1,240 @@
+{% extends "admin/base.html" %}
+{% from "macro/_page.html" import pagination_widget %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="alert alert-danger alert-dismissible" style="display: none;">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-ban"></i> 错误</h4>
+        <p id="alert-msg"></p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title"><i class="fa fa-flag"></i> 竞赛编辑</h3>
+        </div>
+        <div class="box-body no-padding">
+          <div class="list-box-controls">
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-default btn-sm">
+                <input type="radio" name="filter_pass" value="0" autocomplete="off"> 所有
+              </label>
+              <label class="btn btn-default btn-sm">
+                <input type="radio" name="filter_pass" value="1" autocomplete="off"> 未定档
+              </label>
+              <label class="btn btn-default btn-sm">
+                <input type="radio" name="filter_pass" value="-1" autocomplete="off"> 已定档
+              </label>
+            </div>
+            <!--
+            <div class="form-inline" style="display: inline-block;margin-left: 10px;">
+              <div class="form-group form-group-sm">
+                <div class="input-group">
+                  <label for="chooseYear" class="input-group-addon">年份</label>
+                  <select class="form-control" id="chooseYear">
+                    <option>2015</option>
+                    <option>2014</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-sm btn-default">查找</button>
+            </div>
+            -->
+
+            <div class="pull-right">
+              {{ pagination_widget(pagination, '.contest', 'pagination-sm') }}
+            </div>
+          </div>
+          <table class="table table-bordered awards-table table-condensed">
+            <thead><tr>
+              <th width="45%">竞赛名称</th>
+              <th width="12%">竞赛档次</th>
+              <th width="12%">竞赛级别</th>
+              <th width="31%">操作</th>
+            </tr></thead>
+            <tbody>
+            {% if not contest_list %}
+              <tr><td colspan="6"><h2>暂空</h2></td></tr>
+            {% else %}
+            {% for contest in contest_list %}
+              <tr id="contest{{ contest.id }}">
+              <td><b>{{ contest.name_cn }}</b></td>
+              <td>
+                {% if not contest.result %}
+                <label class="label label-danger">{{ '未定档' }}</label>
+                {% else %}
+                  <label class="label label-success">{{ contest.result }}</label>
+                {% endif %}
+              </td>
+              <td>{{ contest.level_name }}</td>
+
+              <td>
+                <div class="btn-group btn-group-sm">
+{#                  {% if not contest.is_pass and current_user.level == 2 %}#}
+{#                    <a href="{{ url_for('admin.contest_check', id=contest.id) }}"#}
+{#                            class="btn bg-green btn-flat btn-sm"><i class="fa fa-flag"></i> 审核</a>#}
+{#                  {% endif %}#}
+                {#   教务处   #}
+                  {% if not department %}
+                    {# apply=0表示竞赛录入教务处待审核 审核通过apply=1 #}
+                    {% if contest.apply == '0' and not contest.result %}
+                        <a href="{{ url_for('admin.contest_check', id=contest.id) }}"
+                            class="btn bg-green btn-flat btn-sm"><i class="fa fa-flag"></i> 审核1</a>
+                    {% endif %}
+
+                    {# 任何时候教务处都有查看及编辑(重新定档)功能 #}
+                        <a class="btn btn-default btn-flat btn-sm" href="{{ url_for('admin.contest_see', id=contest.id) }}">
+                        <i class="fa fa-play-circle"></i> 查看11</a>
+                        <a class="btn btn-default btn-flat btn-sm" href="{{ url_for('admin.contest_check', id=contest.id) }}">
+                        <i class="fa fa-pencil-square-o"></i> 编辑</a>
+                    {# apply=3表示学院申请了编辑教务处待审核 #}
+                      {% if contest.apply == '2' %}
+                          <a href="{{ url_for('admin.contest_apply_through', id=contest.id) }}"
+                            class="btn bg-green btn-flat btn-sm"><i class="fa fa-check"></i> 通过</a>
+                          <a href="{{ url_for('admin.contest_apply_refuse', id=contest.id) }}"
+                            class="btn bg-red btn-flat btn-sm"><i class="fa fa-times"></i> 拒绝</a>
+                      {% endif %}
+                      {% if contest.apply == '4' %}
+                          <a href="{{ url_for('admin.contest_apply_through', id=contest.id) }}"
+                            class="btn bg-green btn-flat btn-sm"><i class="fa fa-flag"></i> 审核</a>
+                          <a href="{{ url_for('admin.contest_apply_refuse', id=contest.id) }}"
+                            class="btn bg-red btn-flat btn-sm"><i class="fa fa-times"></i> 拒绝</a>
+                      {% endif %}
+                  {% else %}
+                    {#  学院   #}
+                     <a class="btn btn-default btn-flat btn-sm" href="{{ url_for('admin.contest_see', id=contest.id) }}">
+                      <i class="fa fa-play-circle"></i> 查看</a>
+                    {# apply=1表示审核通过 学院有申请编辑功能 #}
+                      {% if contest.apply == '1' and contest.result %}
+                             <label class="label label-success">{{ '已审核' }}</label>
+                             <a class="btn btn-default btn-flat btn-sm" href="{{ url_for('admin.contest_apply', id=contest.id) }}">
+                             <i class="fa fa-pencil-square-o"></i> 申请编辑</a>
+                      {# apply=3表示学院申请了编辑待审核状态 #}
+                       {% elif contest.apply == '2' and contest.result %}
+                             <label class="label label-danger">{{ '申请待审核' }}</label>
+                       {% endif %}
+                      {% if not contest.result or contest.apply == '3' %}
+                          {% if not contest.result %}
+                        {# 未定档时学院进行编辑apply不变 #}
+                             <a class="btn btn-default btn-flat btn-sm" href="{{ url_for('admin.contest_edit', id=contest.id) }}">
+                            <i class="fa fa-pencil-square-o"></i> 编辑</a>
+                           {% else %}
+                               <a class="btn btn-default btn-flat btn-sm" href="{{ url_for('admin.contest_edit', id=contest.id) }}">
+                            <i class="fa fa-pencil-square-o"></i> 编辑</a>
+                          {% endif %}
+                      {% endif %}
+                      {% if contest.apply == '4' %}
+                          <label class="label label-danger">{{ '待审核' }}</label>
+                      {% endif %}
+{#                      {% if contest.apply == '3' %}#}
+{#                          <a class="btn btn-default btn-flat btn-sm" href="{{ url_for('admin.contest_apply', id=contest.id) }}">#}
+{#                             <i class="fa fa-pencil-square-o"></i> 申请编辑</a>#}
+{#                      {% endif %}#}
+{#                      {% if contest.apply == '4' and contest.result %}#}
+{#                          <label class="label label-success">{{ '已审核' }}</label>#}
+{#                      {% endif %}#}
+                  {% endif %}
+                  {% if current_user.level == 1 %}
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-flat btn-sm dropdown-toggle"
+                            data-toggle="dropdown" aria-expanded="false">
+                        更多 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a target="_blank" href="{{ url_for('admin.contest_print', id=contest.id) }}">打印</a></li>
+                         <li><a class="to_delete_item" data-toggle="modal" data-target="#delModal"
+                      data-id="{{ contest.id }}"> 删除</a></li>
+                    </ul>
+                  </div>
+                  {% endif %}
+                </div>
+              </td>
+              </tr>
+            {% endfor %}
+            {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="modal fade" id="delModal" tabindex="-1"
+     role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title text-center" id="myModalLabel">警告</h4>
+      </div>
+      <div class="modal-body">
+        <h4>确定删除选定竞赛项以及其所有奖项！</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-danger del-item">确认</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+  <script>
+    var filter_pass = '{{ filter_pass }}';
+
+    function make_filter_pass() {
+      var $input = $('input[name="filter_pass"]');
+      $input.each(function() {
+        var $self = $(this);
+        if ($self.val() === filter_pass) {
+          $self.attr('checked', true);
+          $self.parent().addClass('active');
+        }
+      });
+      $input.on('change', function() {
+        var $selected = $('input[name="filter_pass"]:checked');
+        window.location.href = '{{ url_for('admin.contest', filter_pass='') }}' + $selected.val();
+      });
+    }
+
+    $(document).ready(function() {
+      make_filter_pass();
+
+      var $container = $('.contest-container');
+
+      $('.to_delete_item').on('click', function() {
+        var id = $(this).data('id');
+        $('.del-item').data('contest', id);
+      });
+
+      $('.del-item').on('click', function() {
+        var url = "{{ url_for('admin.contest_del') }}";
+        var id = $(this).data('contest');
+        var data = { 'contest_id' : id };
+        $('#delModal').modal('hide');
+        $.post(url, data, function(response) {
+          if (response.ret == 'OK') {
+            var $items = $('#contest' + id);
+              {#插件删除不强行刷新页面#}
+           {# $container.masonry().masonry('remove', $items).masonry('layout');#}
+               $('#contest' + id).fadeOut(1200, function(){ $(this).remove(); });
+          } else {
+            $('#alert-msg').html(response.ret);
+            $('.alert-danger').fadeIn();
+          }
+        });
+      });
+
+    });
+  </script>
+{% endblock %}

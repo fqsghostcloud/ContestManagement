@@ -1,0 +1,59 @@
+{% extends "admin/base.html" %}
+{% from "macro/_page.html" import pagination_widget %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/admin.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/iCheck/square/blue.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='CSS/chart.css')}}"/>
+{% endblock %}
+
+
+{% block content %}
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="alert alert-danger alert-dismissible" style="display: none;">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-ban"></i> 错误</h4>
+        <p id="alert-msg"></p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title"><i class="fa fa-pencil"></i> 统计</h3>
+        </div>
+    <div style="padding-right: 17px;padding-left: 13px;margin-right: auto;margin-left: auto;">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>测试</th>
+						<th>测试</th>
+						<th>测试</th>
+						<th>测试</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>测试</td>
+						<td>测试</td>
+						<td>测试</td>
+						<td>测试</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+    </div>
+      </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+{#<script src="{{ url_for('static', filename='JS/jquery-2.1.4.js') }}"></script>#}
+<script src="{{ url_for('static', filename='jslib/Highcharts-4.2.5/js/highcharts.js') }}"></script>
+<script src="{{ url_for('static', filename='jslib/Highcharts-4.2.5/js/modules/exporting.js') }}"></script>
+{% endblock %}

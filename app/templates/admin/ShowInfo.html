@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>CUIT 奖项管理</title>
+
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}"/>
+
+
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
+  </head>
+<!-- NAVBAR
+================================================== -->
+  <body>
+{#    <div class="navbar-wrapper">#}
+{#      <div class="container">#}
+{##}
+{#        <nav class="navbar navbar-default navbar-static-top">#}
+{#          <div class="container">#}
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="{{ url_for('admin.index') }}">CUIT 奖项管理</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+{#              <ul class="nav navbar-nav">#}
+{#                <li class="active"><a href="#">显示</a></li>#}
+{#                <li><a href="{{ url_for('main.statistics') }}">显示</a></li>#}
+{#              </ul>#}
+              <ul class="nav navbar-nav navbar-right">
+                <li><a href="{{ url_for('admin.logout') }}"><span>退出</span></a></li>
+              </ul>
+            </div>
+{#          </div>#}
+{#        </nav>#}
+{##}
+{#      </div>#}
+        <div  class="panel-body" style="color: #0c0c0c">
+            <table>
+                <tr>
+                    <td><input id="1" style="width: 200px" value="验证状态："/></td>
+                    <td><input id="1" style="width: 200px" value="{{ r }}"/></td>
+                </tr>
+                <tr>
+                    <td><input id="1" style="width: 200px" value="读取信息状态："/></td>
+                    <td><input id="1"style="width: 200px" value="{{ j["code"] }}"/></td>
+                    <td><input id="1"style="width: 200px" value="{{ j["msg"] }}"/></td>
+                </tr>
+                <tr>
+                    <td><input id="1" style="width: 200px" value="学生信息："/></td>
+                    <td><input id="1"style="width: 200px" value="{{ f["XH"] }}"/></td>
+                    <td><input id="2"style="width: 200px" value="{{ f["XM"] }}"/></td>
+                    <td><input id="3"style="width: 200px" value="{{ f["XB"] }}"/></td>
+                    <td><input id="4"style="width: 200px" value="{{ f["BJ"] }}"/></td>
+                    <td><input id="5"style="width: 200px" value="{{ f["ZY"] }}"/></td>
+                </tr>
+                <tr>
+                    <td><input id="1" style="width: 200px" value="学生大头照："/></td>
+                    <td><image id="6" src="{{ f["ZP"] }}" style="width: 200px;height: 200px;"/></td>
+                </tr>
+            </table>
+        </div>
+{#    </div>#}
+
+
+    <!-- Carousel
+    ================================================== -->
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+{#      <!-- Indicators -->#}
+{#      <div class="carousel-inner" role="listbox">#}
+{#        <div class="item active">#}
+{#          <img class="first-slide" src="{{ url_for('static', filename='images/index-bg2.jpg') }}" alt="First slide">#}
+{#          <div class="container">#}
+{#            <div class="carousel-caption">#}
+{##}
+{#            </div>#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
+    </div><!-- /.carousel -->
+
+
+    <!-- Marketing messaging and featurettes
+    ================================================== -->
+    <!-- Wrap the rest of the page in another container to center all the content. -->
+
+    <div class="container">
+
+      <!-- FOOTER -->
+      <footer>
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p>Copyright &copy; 2015 成都信息工程大学</p>
+      </footer>
+
+    </div><!-- /.container -->
+
+
+    <script src="{{ url_for('static', filename='plugins/jQuery/jQuery-1.11.3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+
+  </body>
+</html>

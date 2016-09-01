@@ -1,0 +1,426 @@
+{% extends "admin/base.html" %}
+{% from "macro/_form_horizontal.html" import render_form_field, render_select_field, render_radio_field %}
+{% from "macro/_flash_alert.html" import render_flash_alert %}
+{% from "macro/_form_horizontal.html" import render_form_field_sm,render_radio1_field,render_form_field_read %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-fileinput/css/fileinput.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/iCheck/square/blue.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-tagsinput/bootstrap-tagsinput.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/typeahead/typeahead.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/tagsinput-typeahead/typeahead.tagging.css') }}"/>
+    <style type="text/css">
+        .TeacherList{
+            width: 27%;
+            height: 35px;
+            position: relative;
+            left: 17%;
+            margin-bottom: 15px;
+            margin-top: -10px;
+            line-height: 35px;
+            font-size: 18px;
+            text-align: center;
+        }
+         .StudentList{
+            width: 27%;
+            height: 35px;
+            position: relative;
+            left: 17%;
+            margin-bottom: 15px;
+            margin-top: -10px;
+            line-height: 35px;
+            font-size: 18px;
+            text-align: center;
+        }
+        .number{
+            float:left;
+            width: 76%;
+            background-color: #5ec0fb;
+            border-radius: 4px;
+        }
+        .studentDel{
+            float: right;
+            width: 15%;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+         .teacherDel{
+            float: right;
+            width: 15%;
+            border-radius: 4px;
+            cursor: pointer;
+         }
+    </style>
+{% endblock %}
+
+{% block content_header %}
+  <div class="row">
+    <div class="col-sm-12">
+      <ol class="breadcrumb">
+        <li><a href="{{ url_for('admin.pre_award') }}">奖项管理</a></li>
+        <li><a href="{{ url_for('admin.awards', id=contest.id) }}">{{ contest.name_cn }}</a></li>
+        <li class="active">{{ title }}</li>
+      </ol>
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title"><i class="fa fa-flag"></i> {{ title }}</h3>
+        </div>
+        <form action="{{ action }}" method="post"
+              enctype="multipart/form-data" class="form-horizontal">
+        {% set n =1 %}
+          <div class="box-body">
+            {{ awards_form.hidden_tag() }}
+            {{ render_form_field(awards_form.title, id='inputTitle') }}
+            {{ render_form_field(awards_form.honor,id='inputHonor') }}
+            {{ render_form_field(awards_form.year, id='inputYear') }}
+          <div class="form-group">
+              <div class="form-inline">
+                {{ render_form_field_sm(awards_form.level, id='inputLevel') }}
+                {{ render_radio1_field(awards_form.type, id='inputType') }}
+              </div>
+
+{#                {{ render_form_field(awards_form.data, id='inputData') }}#}
+          </div>
+          <div class="form-group has-feedback" id="Teacher">
+              <label class="col-sm-2 control-label" for="inputTeachers">指导教师</label>
+              <div class="col-sm-6">
+                <input id="TeacherNum" class="form-control tt-input" type="text" placeholder='输入教师用户名' />
+              </div>
+              <div id="TeacherAdd"><img style="width: 35px;cursor: pointer;" src="{{ url_for('static', filename='IMG/add5.jpg') }}" /></div>
+          </div>
+          {% if i == 1 %}
+            {% set num =0 %}
+            {% for n in awards.teachers %}
+                <div class="TeacherList">
+                    <div class="number">{{ awards.teachers[num].name or '' }}</div>
+                    {% set num = num + 1 %}
+                    <div class="teacherDel"><img style="width:35px;" src="{{ url_for('static', filename='IMG/del2.jpg') }}" /></div>
+                </div>
+            {% endfor %}
+          {% endif %}
+          <div class="form-group has-feedback" id="Student">
+              <label class="col-sm-2 control-label" for="inputTeachers">获奖学生</label>
+              <div class="col-sm-6">
+                <input id="StudentNum" class="form-control tt-input" type="text" placeholder='输入学生学号' />
+              </div>
+              <div id="StudentAdd"><img style="width: 35px;cursor: pointer;" src="{{ url_for('static', filename='IMG/add5.jpg') }}" /></div>
+          </div>
+      {% if i == 1 %}
+        {% set num = 0 %}
+        {% for n in awards.students %}
+            <div class="StudentList">
+                <div class="number">{{ awards.students[num].stu_no or '' }}</div>
+                {% set num = num + 1 %}
+                <div class="studentDel"><img style="width:35px;" src="{{ url_for('static', filename='IMG/del2.jpg') }}" /></div>
+            </div>
+        {% endfor %}
+      {% endif %}
+            {{ render_select_field(awards_form.teachers, id='inputTeachers',type = "hidden",placeholder='输入教师姓名') }}
+            {{ render_select_field(awards_form.students, id='inputStudents',type = "hidden",placeholder="输入学生学号") }}
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="inputFile">相关图片</label>
+              <div class="col-sm-9">
+                <input id="inputFile" name="files" type="file" multiple>
+              </div>
+            </div>
+
+            {% if exist_resources %}
+              <div class="form-group">
+                <label class="control-label col-sm-2">已上传图片</label>
+                <div class="col-sm-10" id="exist_res_wall">
+                  {% for res in exist_resources %}
+                    <div class="col-sm-4 col-md-3 exist_res" id="resource{{ res.id }}">
+                      <div class="img-box">
+                        <img src="{{ res.url }}">
+                        <div class="opt-btn">
+                          <a class="label label-danger to-del-res" data-res="{{ res.id }}"
+                             data-toggle="modal" data-target="#delRes">
+                            <i class="fa fa-times"></i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+
+            <div class="row">
+              <div class="col-sm-offset-2 col-sm-9">
+                {%- with messages = get_flashed_messages() -%}
+                  {{ render_flash_alert(messages) }}
+                {% endwith %}
+              </div>
+            </div>
+
+          </div>
+          <div class="box-footer text-center">
+            <button type="submit" class="btn btn-info btn-lg">提交</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% if exist_resources %}
+  <!-- Modal -->
+  <div class="modal fade" id="delRes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">警告</h4>
+        </div>
+        <div class="modal-body">
+          <h4>是否确定删除此图片</h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-danger del-res">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+{% endblock %}
+
+{% block script %}
+  <script src="{{ url_for('static', filename='plugins/iCheck/icheck.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/bootstrap-fileinput/js/fileinput.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/bootstrap-fileinput/js/fileinput_locale_zh.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/masonry/masonry.pkgd.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/imagesloaded/imagesloaded.pkgd.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/typeahead/typeahead.bundle.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/tagsinput-typeahead/typeahead.tagging.js') }}"></script>
+{#  <script src="{{ url_for('static', filename='plugins/tagsinput-typeahead/typeahead.bundle.min.js') }}"></script>#}
+
+
+  <script>
+    function make_iCheck() {
+      $('input[type="checkbox"], input[type="radio"]').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue'
+      });
+    }
+    function make_typeahead()  {
+      var engine = new Bloodhound({
+        queryTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        identify: function(obj) { return obj.id; },
+        prefetch: "{{ url_for('admin.teachers_json') }}",
+        remote: {
+          url: "{{ url_for('admin.teachers_json', query='') }}" + '%QUERY',
+          wildcard: '%QUERY',
+          filter: function(response) {
+            return response.teachers;
+          }
+        }
+      });
+      engine.initialize();
+      $('#TeacherNum').typeahead({
+        highlight: true,
+        hint: false
+      }, {
+        name: 'teachers',
+        display: 'name',
+        templates: {
+          suggestion: function(obj) {
+            return "<p>" + obj.name + " - " + obj.department + "</p>";
+          }
+        },
+        source: engine
+      });
+    }
+    function make_typeahead1() {
+      var engine = new Bloodhound({
+        queryTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        identify: function(obj) { return obj.id; },
+        prefetch: "{{ url_for('admin.students_json') }}",
+        remote: {
+          url: "{{ url_for('admin.students_json', query='') }}" + '%QUERY',
+          wildcard: '%QUERY',
+          filter: function(response) {
+            return response.students;
+          }
+        }
+      });
+      engine.initialize();
+      $('#StudentNum').typeahead({
+        highlight: true,
+        hint: false
+      }, {
+        name: 'students',
+        display: 'stu_no',
+        templates: {
+          suggestion: function(obj) {
+            return "<p>" + obj.stu_no + " - " + obj.name + " - " + obj.department + "</p>";
+          }
+        },
+        source: engine,
+      });
+    }
+    function make_tagsinput() {
+      var $elt  = $('input[id="inputStudents"]');
+      $elt.tagsinput({
+        tagClass: function(item) {
+          return 'label label-primary';
+        },
+        trimValue: true,
+      });
+
+      $elt.on('beforeItemAdd', function(event) {
+        if (event.item.length != 10) {
+          alert("错误的学号格式");
+          event.cancel = true;
+        }
+      });
+    }
+
+    {#
+     #删除字符串中匹配的字符产
+     #}
+    function replaceAll(str,replaceKey,replaceVal){
+        var reg = new RegExp(replaceKey,'g');
+        return str.replace(reg,replaceVal || '');
+    }
+    $(document).ready(function () {
+      var teacherValue="";
+      var studentValue="";
+      make_iCheck();
+      make_typeahead();
+      make_typeahead1();
+     {# make_tagsinput();#}
+
+        $('#TeacherAdd').click(function(){
+            var url = "{{ url_for('admin.tea_Find') }}";
+            var tea_name = $('#TeacherNum').val();
+            var data = {"tea_name":tea_name};
+            teacherValue = $('#inputTeachers').val();
+            $.post(url, data, function(response) {
+              if (response.ret == 'OK') {
+                teacherValue = teacherValue +','+$('#TeacherNum').val();
+                var html='<div class="TeacherList">'+
+                         '<div class="number">'+$('#TeacherNum').val()+'</div>'+
+                         '<div class="teacherDel"><img style="width:35px;" src="{{ url_for('static', filename='IMG/del2.jpg') }}" /></div>'+
+                     '</div>';
+                $('#Teacher').after(html);
+                $('#inputTeachers').val(teacherValue);
+                $('#TeacherNum').val("");
+              }else {
+                  alert("没有该老师，请重新输入!");
+                   $('#TeacherNum').val("");
+              }
+            });
+        });
+        $('#StudentAdd').click(function(){
+            var url = "{{ url_for('admin.stu_Find') }}";
+            var stu_id = $('#StudentNum').val();
+            var data = {"stu_id":stu_id};
+            studentValue = $('#inputStudents').val();
+            $.post(url, data, function(response) {
+              if (response.ret == 'OK') {
+                studentValue = studentValue + ',' + $('#StudentNum').val();
+                var html1='<div class="StudentList">'+
+                             '<div class="number">'+$('#StudentNum').val()+'</div>'+
+                             '<div class="studentDel"><img style="width:35px;" src="{{ url_for('static', filename='IMG/del2.jpg') }}" /></div>'+
+                      '</div>';
+                $('#Student').after(html1) ;
+                $('#inputStudents').val(studentValue);
+                $('#StudentNum').val("");
+              }else {
+                  alert("没有该学生，请重新输入!");
+                   $('#StudentNum').val("");
+              }
+            });
+
+        });
+
+        $(document).on("click",".studentDel",function(){
+            $(this).parent().fadeOut(500,function(){
+				$(this).remove();
+			});
+            studentValue = $('#inputStudents').val();
+            var str2 = $(this).prevAll().text();
+            var str1 = replaceAll(studentValue,str2);
+            studentValue = str1;
+            $('#inputStudents').val(studentValue);
+        });
+        $(document).on("click",".teacherDel",function(){
+            $(this).parent().fadeOut(500,function(){
+				$(this).remove();
+			});
+            teacherValue = $('#inputTeachers').val();
+            var str2 = $(this).prevAll().text();
+            var str1 = replaceAll(teacherValue,str2);
+            teacherValue = str1;
+            $('#inputTeachers').val(teacherValue);
+        });
+        {#$('.teacherDel').click(function(){
+            $(this).parent().remove();
+            teacherValue = $('#inputTeachers').val();
+            var str2 = ',' + $(this).prevAll().text();
+            alert(teacherValue);
+            alert(str2);
+            var str1 = replaceAll(teacherValue,str2);
+            teacherValue = str1;
+            $('#inputTeachers').val(teacherValue);
+        });#}
+        $('#TeacherAdd img').mouseover(function(){
+           $(this).attr("src","{{ url_for('static', filename='IMG/add6.jpg') }}");
+        });
+        $('#TeacherAdd img').mouseout(function(){
+           $(this).attr("src","{{ url_for('static', filename='IMG/add5.jpg') }}");
+        });
+        $('#StudentAdd img').mouseover(function(){
+           $(this).attr("src","{{ url_for('static', filename='IMG/add6.jpg') }}");
+        });
+        $('#StudentAdd img').mouseout(function(){
+           $(this).attr("src","{{ url_for('static', filename='IMG/add5.jpg') }}");
+        });
+
+      $('#inputFile').fileinput({
+        language: 'zh',
+        showUpload: false,
+        enctype: 'multipart/form-data',
+        allowedFileTypes: ['image'],
+        maxFileSize: 4192
+      });
+
+      var $res_wall = $('#exist_res_wall');
+      $res_wall.imagesLoaded().done(function(instance) {
+        $res_wall.masonry({
+          itemSelector: '.exist_res',
+          isAnimated: true
+        });
+      });
+
+      $('.to-del-res').on('click', function() {
+        $('.del-res').data('res', $(this).data('res'));
+      });
+      $('.del-res').on('click', function() {
+        var url = '{{ url_for('admin.resource_del') }}';
+        var res_id = $(this).data('res');
+        var data = { 'res_id': res_id };
+        $('#delRes').modal('hide');
+
+        $.post(url, data, function(response) {
+          if (response.ret == 'OK') {
+            var $items = $('#resource' + res_id);
+            $res_wall.masonry().masonry('remove', $items).masonry('layout');
+          }
+        });
+      });
+    });
+
+  </script>
+{% endblock %}

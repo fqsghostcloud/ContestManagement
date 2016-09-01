@@ -1,0 +1,102 @@
+{% extends "admin/base.html" %}
+{% from "macro/_page.html" import pagination_widget %}
+
+{% block head %}
+  <style>
+
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">
+            <b style="color: #3c8dbc;">[{{ department }} {{ cur_year }} 年度]</b>
+            竞赛计划表</h3>
+        </div>
+        <div class="box-body no-padding">
+          <div class="list-box-controls">
+           {# <form class="form-inline" method="get"
+                  style="display: inline-block;">#}
+              <div class="form-group form-group-sm">
+                <div class="input-group">
+                  <label for="chooseYear" class="input-group-addon">年份</label>
+                  <select class="form-control" id="chooseYear" name="year" style="width: 80px;">
+                    {% for year in year_select %}
+                      {% if year == cur_year %}
+                        <option value="{{ year }}" selected>{{ year }}</option>
+                      {% else %}
+                        <option value="{{ year }}">{{ year }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                  <button type="" class="btn btn-sm btn-default" id="selectYear">确定</button>
+                </div>
+              </div>
+
+{#            </form>#}
+          </div>
+          <table class="table table-bordered awards-table table-condensed">
+            <thead>
+            <tr>
+              <th width="5%">序号</th>
+              <th width="20%">竞赛全称<br>（以竞赛文件为准）</th>
+              <th width="15%">主办单位<br>（承办单位）</th>
+              <th width="7%">竞赛级别</th>
+              <th width="15%">时间、地点</th>
+              <th width="15%">计划参赛情况</th>
+              <th width="15%">经费预算<br>（含简要说明）</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if not contest_list %}
+              <tr>
+                <td colspan="8"><h2>暂空</h2></td>
+              </tr>
+            {% else %}
+              {% for contest in contest_list %}
+               {% if contest.year == cur_year %}
+                <tr id="contest{{ contest.id }}">
+                  <td>{{ loop.index }}</td>
+                  <td>{{ contest.name_cn }}</td>
+                  <td>{{ contest.organizer }}
+                      <br>{{ contest.co_organizer or '' }}</td>
+                  <td>{{ contest.level_name }}</td>
+
+                  <td>{{ contest.start_date.strftime('%Y/%m/%d') }}
+                    <br> - {{ contest.end_date.strftime('%Y/%m/%d') }}
+                    <br>{{ contest.place }}
+                  </td>
+                  <td>学生：{{ contest.student_num or ' ' }} 人
+                      <br>教师：{{ contest.teacher_num or ' ' }} 人</td>
+                  <td>预算：{{ contest.budget or '' }}
+                    <br>说明：{{ contest.budget_text or '' }}</td>
+                </tr>
+               {% endif %}
+              {% endfor %}
+            {% endif %}
+            </tbody>
+          </table>
+        </div>
+        <div class="box-footer text-center">
+          <a href="{{ url_for('admin.contest_plan_print', year=cur_year) }}"
+             class="btn btn-primary {% if not contest_list %} disabled {% endif %}"
+                  >打印竞赛计划表</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function(){
+        $('#selectYear').click(function(){
+            var year = $('#chooseYear').val();
+            window.location.href = '{{ url_for('admin.contest_plan_config_print',year='') }}'+year;
+        });
+    });
+</script>
+{% endblock %}

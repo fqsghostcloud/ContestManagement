@@ -1,0 +1,262 @@
+{% extends "admin/base.html" %}
+{% from "macro/_form_horizontal.html" import render_form_field, render_select_field, render_radio_field %}
+{% from "macro/_flash_alert.html" import render_flash_alert %}
+{% from "macro/_form_horizontal.html" import render_form_field_sm,render_radio1_field,render_form_field_read,render_select_field_read %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-fileinput/css/fileinput.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/iCheck/square/blue.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-tagsinput/bootstrap-tagsinput.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/typeahead/typeahead.css') }}"/>
+{% endblock %}
+
+{% block content_header %}
+  <div class="row">
+    <div class="col-sm-12">
+      <ol class="breadcrumb">
+        <li><a href="{{ url_for('admin.contest') }}">竞赛管理</a></li>
+        <li><a href="{{ url_for('admin.awards', id=contest.id) }}">{{ contest.name_cn }}</a></li>
+        <li class="active">{{ title }}</li>
+      </ol>
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title"><i class="fa fa-flag"></i> {{ title }}</h3>
+        </div>
+        <form action="{{ action }}" method="post"
+              enctype="multipart/form-data" class="form-horizontal">
+          <div class="box-body">
+            {{ render_form_field_read( contest.name_en ,awards_form.title, id='') }}
+            {{ render_form_field_read(awards.honor,awards_form.honor,id='') }}
+            {{ render_form_field_read( awards.level ,awards_form.level1, id='') }}
+            {{ render_form_field_read( awards.type ,awards_form.type1, id='') }}
+
+            {{ render_select_field_read(awards_form.teachers, id='', placeholder='') }}
+            {{ render_select_field_read(awards_form.students, id='', placeholder="") }}
+            <!--<div class="form-group">
+              <label class="control-label col-sm-2" for="inputFile">相关图片</label>
+              <div class="col-sm-9">
+                <input id="inputFile" name="files" type="file" multiple>
+              </div>
+            </div>-->
+
+            {% if exist_resources %}
+              <div class="form-group">
+                <label class="control-label col-sm-2">已上传图片</label>
+                <div class="col-sm-10" id="exist_res_wall">
+                  {% for res in exist_resources %}
+                    <div class="col-sm-4 col-md-3 exist_res" id="resource{{ res.id }}">
+                      <div class="img-box">
+                        <img src="{{ res.url }}">
+                        <!--<div class="opt-btn">
+                          <a class="label label-danger to-del-res" data-res="{{ res.id }}"
+                             data-toggle="modal" data-target="#delRes">
+                            <i class="fa fa-times"></i>
+                          </a>
+                        </div>-->
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+
+            <div class="row">
+              <div class="col-sm-offset-2 col-sm-9">
+                {%- with messages = get_flashed_messages() -%}
+                  {{ render_flash_alert(messages) }}
+                {% endwith %}
+              </div>
+            </div>
+
+          </div>
+        {% if not department %}
+          <div class="box-footer text-center">
+          {% if awards.apply == '1' %}
+          {% elif awards.apply == '0'%}
+            <button type="submit" class="btn btn-info btn-lg">
+                <a href="{{ url_for('admin.awards_check_pass', id=contest.id,awards_id = awards.id) }}">审 核</a>
+            </button>
+            <button type="submit" class="btn btn-info btn-lg">
+                <a href="{{ url_for('admin.awards_check_refuse', id=contest.id,awards_id = awards.id) }}">打 回</a>
+            </button>
+          {% elif awards.apply == '2' %}
+              <button type="submit" class="btn btn-info btn-lg">
+                <a href="{{ url_for('admin.awards_check_pass', id=contest.id,awards_id = awards.id) }}">审 核</a>
+            </button>
+          {% endif %}
+          </div>
+        {% endif %}
+        </form>
+      </div>
+    </div>
+  </div>
+  {% if exist_resources %}
+  <!-- Modal -->
+  <div class="modal fade" id="delRes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">警告</h4>
+        </div>
+        <div class="modal-body">
+          <h4>是否确定删除此图片</h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-danger del-res">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+{% endblock %}
+
+{% block script %}
+  <script src="{{ url_for('static', filename='plugins/iCheck/icheck.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/bootstrap-fileinput/js/fileinput.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/bootstrap-fileinput/js/fileinput_locale_zh.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/masonry/masonry.pkgd.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/imagesloaded/imagesloaded.pkgd.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/typeahead/typeahead.bundle.js') }}"></script>
+  <!--<script>
+    function make_iCheck() {
+      $('input[type="checkbox"], input[type="radio"]').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue'
+      });
+    }
+    function make_typeahead() {
+      var engine = new Bloodhound({
+        queryTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        identify: function(obj) { return obj.id; },
+        prefetch: "{{ url_for('admin.teachers_json') }}",
+        remote: {
+          url: "{{ url_for('admin.teachers_json', query='') }}" + '%QUERY',
+          wildcard: '%QUERY',
+          filter: function(response) {
+            return response.teachers;
+          }
+        }
+      });
+      engine.initialize();
+      $('#inputTeachers').typeahead({
+        highlight: true,
+        hint: false
+      }, {
+        name: 'teachers',
+        display: 'name',
+        templates: {
+          suggestion: function(obj) {
+            return "<p>" + obj.name + " - " + obj.department + "</p>";
+          }
+        },
+        source: engine
+      });
+    }
+    function make_typeahead1() {
+      var engine = new Bloodhound({
+        queryTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        identify: function(obj) { return obj.id; },
+        prefetch: "{{ url_for('admin.students_json') }}",
+        remote: {
+          url: "{{ url_for('admin.students_json', query='') }}" + '%QUERY',
+          wildcard: '%QUERY',
+          filter: function(response) {
+            return response.students;
+          }
+        }
+      });
+      engine.initialize();
+      $('#inputStudents').typeahead({
+        highlight: true,
+        hint: false
+      }, {
+        name: 'students',
+        display: 'stu_no',
+        templates: {
+          suggestion: function(obj) {
+            return "<p>" + obj.stu_no + " - " + obj.name + " - " + obj.department + "</p>";
+          }
+        },
+        source: engine,
+      });
+    }
+    function make_tagsinput() {
+      var $elt  = $('input[id="inputStudents"]');
+      $elt.tagsinput({
+        tagClass: function(item) {
+          return 'label label-primary';
+        },
+        trimValue: true
+      });
+
+      $elt.on('beforeItemAdd', function(event) {
+        if (event.item.length != 10) {
+          alert("错误的学号格式");
+          event.cancel = true;
+        }
+      });
+    }
+
+    $(document).ready(function () {
+      make_iCheck();
+      make_typeahead();
+      make_typeahead1();
+      make_tagsinput();
+
+        $("#tags-text-input").ready(function () {
+    $("#tags-text-input").tagsinput({
+        typeahead: {
+            source: ["I'm done trying...", "Jhon", "Smith"]
+        }
+    });
+});
+
+      $('#inputFile').fileinput({
+        language: 'zh',
+        showUpload: false,
+        enctype: 'multipart/form-data',
+        allowedFileTypes: ['image'],
+        maxFileSize: 4192
+      });
+
+      var $res_wall = $('#exist_res_wall');
+      $res_wall.imagesLoaded().done(function(instance) {
+        $res_wall.masonry({
+          itemSelector: '.exist_res',
+          isAnimated: true
+        });
+      });
+
+      $('.to-del-res').on('click', function() {
+        $('.del-res').data('res', $(this).data('res'));
+      });
+      $('.del-res').on('click', function() {
+        var url = '{{ url_for('admin.resource_del') }}';
+        var res_id = $(this).data('res');
+        var data = { 'res_id': res_id };
+        $('#delRes').modal('hide');
+
+        $.post(url, data, function(response) {
+          if (response.ret == 'OK') {
+            var $items = $('#resource' + res_id);
+            $res_wall.masonry().masonry('remove', $items).masonry('layout');
+          }
+        });
+      });
+    });
+  </script>-->
+{% endblock %}

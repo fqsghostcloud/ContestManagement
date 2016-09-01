@@ -1,0 +1,179 @@
+{% macro render_form_field(field,id) %}
+  {% if field.errors %}
+    <div class="form-group form-group-sm has-error has-feedback">
+  {% else %}
+    <div class="form-group form-group-sm has-feedback">
+  {% endif %}
+      {{ field.label(for=id, class="col-sm-2 control-label") }}
+      <div class="col-sm-6">
+        {{ field(class="form-control", id=id, **kwargs) | safe }}
+        {% if field.errors %}
+          <small class="help-block" data-bv-for={{ id }}>
+            {% for error in field.errors %}
+              {{ error }}<br>
+            {% endfor %}
+          </small>
+        {% endif %}
+      </div>
+    </div>
+{% endmacro %}
+
+{% macro render_form_field_read(value,field, id) %}
+  {% if field.errors %}
+    <div class="form-group form-group-sm has-error has-feedback">
+  {% else %}
+    <div class="form-group form-group-sm has-feedback">
+  {% endif %}
+      {{ field.label(for=id, class="col-sm-2 control-label") }}
+      <div class="col-sm-5">
+        {{ field(class="form-control",readonly="readonly",value=value, id=id, **kwargs) | safe }}
+        {% if field.errors %}
+          <small class="help-block" data-bv-for={{ id }}>
+            {% for error in field.errors %}
+              {{ error }}<br>
+            {% endfor %}
+          </small>
+        {% endif %}
+      </div>
+    </div>
+{% endmacro %}
+
+{% macro render_form_field_sm(field, id) %}
+  {% if field.errors %}
+    <div class="form-group form-group-sm has-error has-feedback">
+  {% else %}
+    <div class="form-group form-group-sm has-feedback">
+  {% endif %}
+    <div class="col-sm-12">
+        {{ field.label(for=id, class="col-sm-4 control-label") }}
+      <div class="col-sm-6">
+        {{ field(class="form-control", id=id, width="100%", **kwargs) | safe }}
+        {% if field.errors %}
+          <small class="help-block" data-bv-for={{ id }}>
+            {% for error in field.errors %}
+              {{ error }}<br>
+            {% endfor %}
+          </small>
+        {% endif %}
+      </div>
+      </div>
+    </div>
+{% endmacro %}
+{% macro render_form_field_sm1(field, id) %}
+  {% if field.errors %}
+    <div class="form-group form-group-sm has-error has-feedback">
+  {% else %}
+    <div class="form-group form-group-sm has-feedback">
+  {% endif %}
+    <div class="col-sm-10">
+        {{ field.label(for=id, class="col-sm-4 control-label") }}
+      <div class="col-sm-6">
+        {{ field(class="form-control", id=id, width="100%", **kwargs) | safe }}
+        {% if field.errors %}
+          <small class="help-block" data-bv-for={{ id }}>
+            {% for error in field.errors %}
+              {{ error }}<br>
+            {% endfor %}
+          </small>
+        {% endif %}
+      </div>
+      </div>
+    </div>
+{% endmacro %}
+
+
+{% macro render_radio_field(field, id) %}
+  {% if field.errors %}
+    <div class="form-group has-error has-feedback">
+  {% else %}
+    <div class="form-group has-feedback">
+  {% endif %}
+      {{ field.label(for=id, class="col-sm-2 control-label") }}
+      <div class="col-sm-9">
+        {% for sub in field %}
+          <label class="radio-inline">
+            {{ sub }}
+            {{ sub.label(style='margin-left:10px;') }}
+          </label>
+        {% endfor %}
+        {% if field.errors %}
+          <small class="help-block" data-bv-for={{ kwargs['id'] }}>
+            {% for error in field.errors %}
+              {{ error }}<br>
+            {% endfor %}
+          </small>
+        {% endif %}
+      </div>
+    </div>
+{% endmacro %}
+
+{% macro render_radio1_field(field, id) %}
+  {% if field.errors %}
+    <div class="form-group has-error has-feedback">
+  {% else %}
+    <div class="form-group has-feedback">
+  {% endif %}
+      {{ field.label(for=id, class="col-sm-3 control-label") }}
+      <div class="col-sm-9">
+        {% for sub in field %}
+          <label class="radio-inline">
+            {{ sub }}
+            {{ sub.label(style='margin-left:10px;') }}
+          </label>
+        {% endfor %}
+        {% if field.errors %}
+          <small class="help-block" data-bv-for={{ kwargs['id'] }}>
+            {% for error in field.errors %}
+              {{ error }}<br>
+            {% endfor %}
+          </small>
+        {% endif %}
+      </div>
+    </div>
+{% endmacro %}
+
+{% macro render_select_field(field, id) %}
+  {% if field.errors %}
+    <div class="form-group has-error has-feedback">
+  {% else %}
+    <div class="form-group has-feedback">
+  {% endif %}
+      {{ field.label(for=id, class="col-sm-2 control-label") }}
+      <div class="col-sm-9">
+        {{ field(class="form-control",id=id, **kwargs) | safe }}
+        {% if field.errors %}
+          <small class="help-block" data-bv-for={{ id }}>
+            {% for error in field.errors %}
+              {{ error }}<br>
+            {% endfor %}
+          </small>
+        {% endif %}
+      </div>
+      <!--<div class="col-sm-3">
+        <a class="btn btn-primary btn-block btn-sm" href="" target="_blank"></a>
+      </div>-->
+    </div>
+{% endmacro %}
+
+{% macro render_select_field_read(field, id) %}
+  {% if field.errors %}
+    <div class="form-group has-error has-feedback">
+  {% else %}
+    <div class="form-group has-feedback">
+  {% endif %}
+      {{ field.label(for=id, class="col-sm-2 control-label") }}
+      <div class="col-sm-5">
+        {{ field(class="form-control", readonly="readonly",id=id, **kwargs) | safe }}
+        {% if field.errors %}
+          <small class="help-block" data-bv-for={{ id }}>
+            {% for error in field.errors %}
+              {{ error }}<br>
+            {% endfor %}
+          </small>
+        {% endif %}
+      </div>
+      <!--<div class="col-sm-3">
+        <a class="btn btn-primary btn-block btn-sm" href="" target="_blank"></a>
+      </div>-->
+    </div>
+{% endmacro %}

@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    {% if title -%}
+      <title>{{ title }} - CUIT 奖项管理</title>
+    {%- else -%}
+      <title>CUIT 奖项管理</title>
+    {%- endif %}
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/Font-Awesome-4.4.0/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}"/>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
+    {% block head %}{% endblock %}
+  </head>
+
+  <body>
+  <div class="navbar-wrapper">
+      <div class="container">
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">CUIT 奖项管理</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="{{ url_for('main.index') }}">主页</a></li>
+            <li><a href="{{ url_for('main.statistics') }}">统计</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{{ url_for('admin.index') }}"><span>管理员工作</span></a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="content">
+        <h2>Content</h2>
+        {% block content %}{% endblock %}
+      </div>
+    </div> <!-- /container -->
+
+    <script src="{{ url_for('static', filename='plugins/jQuery/jQuery-1.11.3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

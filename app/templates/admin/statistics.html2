@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="CSS/chart.css">
+	<script type="text/javascript" src="http://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript" src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+	<script type="text/javascript" src="JS/initialize.js"></script>
+	<script type="text/javascript" src="JS/chartInfo.js"></script>
+  	<script>
+    //左侧Javascript代码
+  	</script>
+</head>
+<body>
+	<input id="btnshow" type="button" value="Show" onclick="showdiv();" />
+	<div id = "back"></div>
+	<div id="small">
+  		<div id="container" style="min-width:700px;height:400px"></div>
+  		<input id="btnclose" type="button" value="Close" onclick="hidediv();" />
+  	</div>
+</body>
+</html>

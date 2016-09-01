@@ -1,0 +1,112 @@
+{% extends "admin/base.html" %}
+{% from "macro/_form_horizontal.html" import render_form_field, render_radio_field %}
+{% from "macro/_form_horizontal.html" import render_form_field_sm, render_form_field_sm1 %}
+{% from "macro/_flash_alert.html" import render_flash_alert %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/daterangepicker/daterangepicker-bs3.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/iCheck/square/blue.css') }}"/>
+{% endblock %}
+
+{% block content_header %}
+  <div class="row">
+    <div class="col-sm-12">
+      <ol class="breadcrumb">
+        <li>计划管理</li>
+        <li class="active">{{ title }}</li>
+      </ol>
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box box-primary">
+        <div class="box-header">
+          <h3 class="box-title">{{ title }}</h3>
+        </div>
+        <form action="{{ action }}" method="post" class="form-horizontal">
+          <div class="box-body">
+            {{ contest_form.hidden_tag() }}
+            {{ render_form_field(contest_form.name_cn, id='inputNameCN') }}
+            {{ render_form_field(contest_form.name_en, id='inputNameEN') }}
+            {{ render_form_field(contest_form.level_id, id='inputLevel') }}
+            {{ render_form_field(contest_form.series_id, id='inputSeries') }}
+            {{ render_form_field(contest_form.type, id='inputType') }}
+            <!--
+            <div class="form-group">
+              <div class="form-inline">
+                {{ render_form_field_sm(contest_form.department, id='inputDepartment') }}
+              </div>
+            </div>
+            -->
+            {{ render_form_field(contest_form.site, id='inputSite') }}
+            {{ render_form_field(contest_form.organizer, id='inputOrganizer') }}
+            {{ render_form_field(contest_form.co_organizer, id='inputCoOrganizer') }}
+            {{ render_form_field(contest_form.date_range, id='inputDateRange') }}
+{#                {{ render_form_field_sm(contest_form.year, id='inputYear') }}#}
+            <div class="form-group form-group-sm" id="cityselect">
+              <label class="col-sm-2 control-label" for="inputPlace">竞赛地点</label>
+              <div class="col-sm-3">
+                <select id="inputPlace" class="prov form-control" name="prov"></select>
+              </div>
+              <div class="col-sm-3">
+                <select id="inputPlace" class="city form-control" disabled="disabled" name="city"></select>
+              </div>
+            </div>
+            {{ render_form_field(contest_form.place, id='inputPlace', placeholder='详细地点') }}
+            {{ render_form_field(contest_form.budget, id='inputBudget') }}
+            {{ render_form_field(contest_form.budget_text, id='inputBudgetText', rows='3') }}
+            {#{{ render_form_field(contest_form.subject, id='inputSubject') }}#}
+            <div class="form-group">
+              <div class="form-inline">
+                {{ render_form_field_sm(contest_form.student_num, id='inputStudentNum') }}
+                {{ render_form_field_sm(contest_form.teacher_num, id='inputTeacherNum') }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-offset-2 col-sm-9">
+                {%- with messages = get_flashed_messages() -%}
+                  {{ render_flash_alert(messages) }}
+                {% endwith %}
+              </div>
+            </div>
+          </div>
+          <!-- /.box-body -->
+          <div class="box-footer text-center">
+            <button type="submit" class="btn btn-info btn-lg">提 交</button>
+          </div>
+          <!-- /.box-footer -->
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='plugins/iCheck/icheck.min.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/daterangepicker/moment.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/daterangepicker/daterangepicker.js') }}"></script>
+<script src="{{ url_for('static', filename='plugins/cityselect/jquery.cityselect.js') }}"></script>
+<script>
+  function make_iCheck() {
+    $('input[type="checkbox"], input[type="radio"]').iCheck({
+      checkboxClass: 'icheckbox_square-blue',
+      radioClass: 'iradio_square-blue'
+    });
+  }
+  $(document).ready(function() {
+    make_iCheck();
+    $('#inputDateRange').daterangepicker({
+      format: 'YYYY/MM/DD',
+      showDropdowns: true
+    });
+    $("#cityselect").citySelect({
+      url: '{{ url_for('static', filename='plugins/cityselect/city.min.js') }}',
+      prov: "线上竞赛"
+    });
+  });
+
+</script>
+{% endblock %}

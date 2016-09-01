@@ -1,0 +1,120 @@
+{% extends "admin/base.html" %}
+{% from "macro/_page.html" import pagination_widget %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/admin.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/iCheck/square/blue.css') }}"/>
+{% endblock %}
+
+
+{% block content %}
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="alert alert-danger alert-dismissible" style="display: none;">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-ban"></i> 错误</h4>
+        <p id="alert-msg"></p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title"><i class="fa fa-bicycle"></i> 学生管理</h3>
+        </div>
+        <div class="box-body no-padding">
+          <div class="list-box-controls">
+            <a class="btn btn-primary btn-sm" href="{{ url_for('admin.student_add') }}"><i class="fa fa-plus"></i>
+              添加</a>
+            <div class="pull-right">
+				{{ pagination_widget(pagination, '.student', 'pagination-sm') }}
+            </div>
+          </div>
+          <table class="table table-bordered table-striped table-condensed" style="text-align: center">
+            <thead><tr>
+              <th width="25%">学号</th>
+              <th class="col-name">姓名</th>
+              <th>院系</th>
+              <th>专业年级</th>
+              <th width="20%">操作</th>
+            </tr></thead>
+            <tbody>
+            {% if not student_list %}
+              <tr><td colspan="5"><h2>当前无学生信息</h2></td></tr>
+            {% else %}
+            {% for student in student_list %}
+              <tr id="student{{ student.id }}">
+              <td class="col-name"><b>{{ student.stu_no }}</b></td>
+              <td class="col-name">{{ student.name or '' }}</td>
+              <td>{{ student.department or '' }}</td>
+              <td>{{ student.major or '' }}
+                {{ student.grade + '级' if student.grade else '' }}</td>
+              <td>
+                <div class="btn-group btn-group-sm">
+                  <a class="btn btn-default btn-sm" href="{{ url_for('admin.student_edit', id=student.id) }}">
+                    <i class="fa fa-pencil-square-o"></i> 修改
+                  </a>
+                  <a class="btn btn-default btn-sm to_delete_item"  data-item="{{ student.id }}"
+                     data-toggle="modal" data-target="#delModal"> <i class="fa fa-trash-o"></i> 删除
+                  </a>
+                </div>
+              </td>
+              </tr>
+            {% endfor %}
+            {% endif %}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+<div class="modal fade" id="delModal" tabindex="-1"
+     role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title text-center" id="myModalLabel">警告</h4>
+      </div>
+      <div class="modal-body">
+        <h4>确定删除选定学生</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-danger del-item">确认</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+  <script>
+    $(document).ready(function() {
+      $('.to_delete_item').on('click', function() {
+        var id = $(this).data('item');
+        $('.del-item').data('student', id);
+      });
+      $('.del-item').on('click', function() {
+        var url = "{{ url_for('admin.student_del') }}";
+        var id = $(this).data('student');
+        var data = { 'student_id' : id };
+        $('#delModal').modal('hide');
+        $.post(url, data, function(response) {
+          if (response.ret == 'OK') {
+            $('#student' + id).fadeOut(1200, function(){ $(this).remove(); });
+          } else {
+            $('#alert-msg').html(response.ret);
+            $('.alert-danger').fadeIn();
+          }
+        });
+      });
+
+    });
+  </script>
+{% endblock %}
